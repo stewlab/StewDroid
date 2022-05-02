@@ -21,7 +21,7 @@ class StewDroid(godot: Godot?) : GodotPlugin(godot) {
 
     @UsedByGodot
     fun emitPluginInitSignal(message : String) {
-        emitSignal(Signals.STEWDROID_INIT.name, message)
+        emitSignal(Signals.STEWDROID_INIT.signalName, message)
     }
 
     override fun getPluginName(): String {
@@ -33,12 +33,12 @@ class StewDroid(godot: Godot?) : GodotPlugin(godot) {
         val signals = ArraySet<SignalInfo>()
 
         signals.add(SignalInfo(
-            Signals.STEWDROID_INIT.name,
+            Signals.STEWDROID_INIT.signalName,
             String::class.java
         ))
 
         signals.add(SignalInfo(
-            Signals.ADMOB_INIT.name,
+            Signals.ADMOB_INIT.signalName,
             String::class.java
         ))
 
