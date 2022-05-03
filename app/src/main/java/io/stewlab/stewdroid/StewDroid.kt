@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.util.ArraySet
 import android.view.View
+import androidx.fragment.app.FragmentActivity
 import io.stewlab.stewdroid.enum.Signals
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
@@ -14,14 +15,29 @@ import javax.microedition.khronos.opengles.GL10
 
 class StewDroid(godot: Godot?) : GodotPlugin(godot) {
 
-    @UsedByGodot
-    fun getHello() : String {
-        return "Hello from Kotlin StewDroid!"
+    private val godotActivity: FragmentActivity? = godot?.activity
+
+    init {
     }
 
     @UsedByGodot
-    fun emitPluginInitSignal(message : String) {
-        emitSignal(Signals.STEWDROID_INIT.signalName, message)
+    fun shareText(text : String) {
+
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, text)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+
+        godotActivity?.startActivity(shareIntent)
+
+    }
+
+    @UsedByGodot
+    fun getHello(): String {
+        return "Hello from Kotlin StewDroid!"
     }
 
     override fun getPluginName(): String {
@@ -87,6 +103,7 @@ class StewDroid(godot: Godot?) : GodotPlugin(godot) {
 
     override fun onGodotSetupCompleted() {
         super.onGodotSetupCompleted()
+        emitSignal(Signals.STEWDROID_INIT.signalName, "StewDroid has been initialized!")
     }
 
     override fun onGodotMainLoopStarted() {
