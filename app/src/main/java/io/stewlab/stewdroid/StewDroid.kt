@@ -5,6 +5,9 @@ import android.content.Intent
 import android.util.ArraySet
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import io.stewlab.stewdroid.admob.AdMob
+import io.stewlab.stewdroid.admob.RewardedAdListener
+import io.stewlab.stewdroid.enum.AdMobSignals
 import io.stewlab.stewdroid.enum.Signals
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
@@ -16,8 +19,58 @@ import javax.microedition.khronos.opengles.GL10
 class StewDroid(godot: Godot?) : GodotPlugin(godot) {
 
     private val godotActivity: FragmentActivity? = godot?.activity
+    private val adMob: AdMob = AdMob()
 
     init {
+
+    }
+
+    // AdMob Functions
+    @UsedByGodot
+    fun initializeAdmob() {
+        adMob.initialize(godotActivity)
+    }
+
+    @UsedByGodot
+    fun loadRewardedAd() {
+        adMob.loadRewardedAd(godotActivity, object: RewardedAdListener {
+            override fun onAdLoaded() {
+                emitSignal(AdMobSignals.REWARDED_AD_LOADED.signalName, "")
+            }
+
+            override fun onAdFailedToLoad(errorCode: Int) {
+                emitSignal(AdMobSignals.REWARDED_AD_FAILED_TO_LOAD.signalName, "")
+            }
+
+            override fun onAdShowedFullScreenContent() {
+                TODO("Not yet implemented")
+            }
+
+            override fun onAdFailedToShowFullScreenContent() {
+                TODO("Not yet implemented")
+            }
+
+            override fun onAdDismissedFullScreenContent() {
+                TODO("Not yet implemented")
+            }
+
+            override fun onAdClicked() {
+                TODO("Not yet implemented")
+            }
+
+            override fun onAdImpression() {
+                TODO("Not yet implemented")
+            }
+
+            override fun onUserEarnedReward(type: String, amount: Int) {
+                emitSignal(AdMobSignals.REWARDED_AD_USER_EARNED_REWARD.signalName, "")
+            }
+        })
+    }
+
+    @UsedByGodot
+    fun showRewardAd() {
+        adMob.showRewardAd(godotActivity)
     }
 
     @UsedByGodot
@@ -54,7 +107,22 @@ class StewDroid(godot: Godot?) : GodotPlugin(godot) {
         ))
 
         signals.add(SignalInfo(
-            Signals.ADMOB_INIT.signalName,
+            AdMobSignals.ADMOB_INIT.signalName,
+            String::class.java
+        ))
+
+        signals.add(SignalInfo(
+            AdMobSignals.REWARDED_AD_LOADED.signalName,
+            String::class.java
+        ))
+
+        signals.add(SignalInfo(
+            AdMobSignals.REWARDED_AD_FAILED_TO_LOAD.signalName,
+            String::class.java
+        ))
+
+        signals.add(SignalInfo(
+            AdMobSignals.REWARDED_AD_USER_EARNED_REWARD.signalName,
             String::class.java
         ))
 
