@@ -6,6 +6,7 @@ import android.util.ArraySet
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import io.stewlab.stewdroid.admob.AdMob
+import io.stewlab.stewdroid.admob.AdMobInitListener
 import io.stewlab.stewdroid.admob.RewardedAdListener
 import io.stewlab.stewdroid.enum.AdMobSignals
 import io.stewlab.stewdroid.enum.Signals
@@ -26,9 +27,13 @@ class StewDroid(godot: Godot?) : GodotPlugin(godot) {
     }
 
     // AdMob Functions
-    @UsedByGodot
-    fun initializeAdmob() {
-        adMob.initialize(godotActivity)
+//    @UsedByGodot
+    private fun initializeAdmob() {
+        adMob.initialize(godotActivity, object: AdMobInitListener {
+            override fun onInitializationComplete() {
+                emitSignal(AdMobSignals.ADMOB_INIT.signalName, "")
+            }
+        })
     }
 
     @UsedByGodot
@@ -138,6 +143,8 @@ class StewDroid(godot: Godot?) : GodotPlugin(godot) {
     }
 
     override fun onMainCreate(activity: Activity?): View? {
+        initializeAdmob()
+        emitSignal(Signals.STEWDROID_INIT.signalName, "StewDroid has been initialized!")
         return super.onMainCreate(activity)
     }
 
@@ -171,7 +178,6 @@ class StewDroid(godot: Godot?) : GodotPlugin(godot) {
 
     override fun onGodotSetupCompleted() {
         super.onGodotSetupCompleted()
-        emitSignal(Signals.STEWDROID_INIT.signalName, "StewDroid has been initialized!")
     }
 
     override fun onGodotMainLoopStarted() {

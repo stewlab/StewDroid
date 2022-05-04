@@ -3,6 +3,7 @@ package io.stewlab.stewdroid.admob
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.ads.*
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 
@@ -17,11 +18,13 @@ class AdMob {
 
 
 
-    fun initialize(currentActivity: FragmentActivity?) {
+    fun initialize(currentActivity: FragmentActivity?, adMobInitListener: AdMobInitListener) {
 
-        MobileAds.initialize(currentActivity){}
-        admobInitialized = true
-        Log.i(TAG, "AdMob Initialization Status: ".plus(admobInitialized))
+        MobileAds.initialize(currentActivity!!){
+            adMobInitListener.onInitializationComplete()
+            admobInitialized = true
+            Log.i(TAG, "AdMob Initialization Status: ".plus(it.toString()))
+        }
 
     }
 
@@ -32,9 +35,9 @@ class AdMob {
     fun loadRewardedAd(currentActivity: FragmentActivity?, ral: RewardedAdListener) {
 
         rewardedAdListener = ral
-        var adRequest: AdRequest = getAdRequest()
+        val adRequest: AdRequest = getAdRequest()
         
-        RewardedAd.load(currentActivity, rewardAdUnitId, adRequest, object : RewardedAdLoadCallback() {
+        RewardedAd.load(currentActivity!!, rewardAdUnitId, adRequest, object : RewardedAdLoadCallback() {
 
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                 Log.d(TAG, loadAdError.message)
@@ -75,13 +78,13 @@ class AdMob {
     }
 
     fun showRewardAd(currentActivity: FragmentActivity?) {
-        rewardedAd?.show(currentActivity, OnUserEarnedRewardListener {
+        rewardedAd?.show(currentActivity!!) {
 
-            var rewardAmount = it.amount
-            var rewardType = it.type
+            val rewardAmount = it.amount
+            val rewardType = it.type
 
             rewardedAdListener?.onUserEarnedReward(rewardType, rewardAmount)
-        })
+        }
     }
 
     companion object {
