@@ -27,13 +27,17 @@ class StewDroid(godot: Godot?) : GodotPlugin(godot) {
     }
 
     // AdMob Functions
-//    @UsedByGodot
+    @UsedByGodot
     private fun initializeAdmob() {
-        adMob.initialize(godotActivity, object: AdMobInitListener {
-            override fun onInitializationComplete() {
-                emitSignal(AdMobSignals.ADMOB_INIT.signalName, "")
-            }
+
+        runOnUiThread(Runnable {
+            adMob.initialize(godotActivity, object: AdMobInitListener {
+                override fun onInitializationComplete() {
+                    emitSignal(AdMobSignals.ADMOB_INIT.signalName, "")
+                }
+            })
         })
+
     }
 
     @UsedByGodot
@@ -143,8 +147,6 @@ class StewDroid(godot: Godot?) : GodotPlugin(godot) {
     }
 
     override fun onMainCreate(activity: Activity?): View? {
-        initializeAdmob()
-        emitSignal(Signals.STEWDROID_INIT.signalName, "StewDroid has been initialized!")
         return super.onMainCreate(activity)
     }
 
@@ -178,6 +180,7 @@ class StewDroid(godot: Godot?) : GodotPlugin(godot) {
 
     override fun onGodotSetupCompleted() {
         super.onGodotSetupCompleted()
+        emitSignal(Signals.STEWDROID_INIT.signalName, "StewDroid has been initialized!")
     }
 
     override fun onGodotMainLoopStarted() {
