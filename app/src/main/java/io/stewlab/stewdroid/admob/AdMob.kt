@@ -17,7 +17,6 @@ class AdMob {
     private var rewardedAdListener: RewardedAdListener? = null
 
 
-
     fun initialize(currentActivity: FragmentActivity?, adMobInitListener: AdMobInitListener) {
 
         MobileAds.initialize(currentActivity!!){
@@ -36,7 +35,7 @@ class AdMob {
 
         rewardedAdListener = ral
         val adRequest: AdRequest = getAdRequest()
-        
+
         RewardedAd.load(currentActivity!!, rewardAdUnitId, adRequest, object : RewardedAdLoadCallback() {
 
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
