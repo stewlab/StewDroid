@@ -45,40 +45,48 @@ class StewDroid(godot: Godot?) : GodotPlugin(godot) {
 
         runOnUiThread(Runnable {
 
-            adMob.loadRewardedAd(godotActivity, object: RewardedAdListener {
+            try {
 
-                override fun onAdLoaded() {
-                    emitSignal(AdMobSignals.REWARDED_AD_LOADED.signalName, "")
-                }
+                adMob.loadRewardedAd(godotActivity, object: RewardedAdListener {
 
-                override fun onAdFailedToLoad(errorCode: Int) {
-                    emitSignal(AdMobSignals.REWARDED_AD_FAILED_TO_LOAD.signalName, "")
-                }
+                    override fun onAdLoaded() {
+                        emitSignal(AdMobSignals.REWARDED_AD_LOADED.signalName, "")
+                    }
 
-                override fun onAdShowedFullScreenContent() {
-                    TODO("Not yet implemented")
-                }
+                    override fun onAdFailedToLoad(errorCode: Int) {
+                        emitSignal(AdMobSignals.REWARDED_AD_FAILED_TO_LOAD.signalName, "")
+                    }
 
-                override fun onAdFailedToShowFullScreenContent() {
-                    TODO("Not yet implemented")
-                }
+                    override fun onAdShowedFullScreenContent() {
+                        TODO("Not yet implemented")
+                    }
 
-                override fun onAdDismissedFullScreenContent() {
-                    TODO("Not yet implemented")
-                }
+                    override fun onAdFailedToShowFullScreenContent() {
+                        TODO("Not yet implemented")
+                    }
 
-                override fun onAdClicked() {
-                    TODO("Not yet implemented")
-                }
+                    override fun onAdDismissedFullScreenContent() {
+                        TODO("Not yet implemented")
+                    }
 
-                override fun onAdImpression() {
-                    TODO("Not yet implemented")
-                }
+                    override fun onAdClicked() {
+                        TODO("Not yet implemented")
+                    }
 
-                override fun onUserEarnedReward(type: String, amount: Int) {
-                    emitSignal(AdMobSignals.REWARDED_AD_USER_EARNED_REWARD.signalName, "")
-                }
-            })
+                    override fun onAdImpression() {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onUserEarnedReward(type: String, amount: Int) {
+                        emitSignal(AdMobSignals.REWARDED_AD_USER_EARNED_REWARD.signalName, "")
+                    }
+                })
+
+            } catch (e : Exception) {
+
+                emitSignal(Signals.STEWDROID_EXCEPTION.signalName, e.message)
+
+            }
 
         })
 
@@ -123,6 +131,11 @@ class StewDroid(godot: Godot?) : GodotPlugin(godot) {
 
         signals.add(SignalInfo(
             Signals.STEWDROID_INIT.signalName,
+            String::class.java
+        ))
+
+        signals.add(SignalInfo(
+            Signals.STEWDROID_EXCEPTION.signalName,
             String::class.java
         ))
 
