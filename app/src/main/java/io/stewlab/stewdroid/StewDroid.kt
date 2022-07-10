@@ -41,13 +41,13 @@ class StewDroid(godot: Godot?) : GodotPlugin(godot) {
     }
 
     @UsedByGodot
-    fun loadRewardedAd() {
+    fun loadRewardedAd(adUnitId: String) {
 
         runOnUiThread(Runnable {
 
             try {
 
-                adMob.loadRewardedAd(godotActivity, object: RewardedAdListener {
+                adMob.loadRewardedAd(adUnitId, godotActivity, object: RewardedAdListener {
 
                     override fun onAdLoaded() {
                         emitSignal(AdMobSignals.REWARDED_AD_LOADED.signalName, "")
